@@ -15,8 +15,8 @@ import static main.Command.*;
 
 public class AdvertisementMain {
 
-    private static Scanner scanner = new Scanner(System.in);
-    private static DataStorage dataStorage = new DataStorage();
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final DataStorage dataStorage = new DataStorage();
     private static User currentUser = null;
 
     public static void main(String[] args) {
