@@ -20,6 +20,7 @@ public class AdvertisementMain {
     private static User currentUser = null;
 
     public static void main(String[] args) {
+        dataStorage.initData();
         boolean isRun = true;
         while (isRun) {
             Command.printMainCommands();

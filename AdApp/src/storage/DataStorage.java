@@ -16,7 +16,16 @@ public class DataStorage {
 
 
     public void initData() {
-
+        try {
+            map = FileUtil.deserializeUser();
+            try {
+                items = FileUtil.deserializeItem();
+            }catch (Exception e){
+                System.out.println("The file is empty");
+            }
+        } catch (Exception e) {
+            System.out.println("The file is empty");
+        }
     }
 
     public void add(User user) throws IOException {
