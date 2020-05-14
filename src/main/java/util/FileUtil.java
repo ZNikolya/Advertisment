@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class FileUtil {
 
-    private static final String User_PATH = "D:\\IdeaProjects\\Advertisment\\AdApp\\src\\util\\file\\serializeUser.txt";
-    private static final String Item_PATH = "D:\\IdeaProjects\\Advertisment\\AdApp\\src\\util\\file\\serializeItem.txt";
+    private static final String User_PATH = "src\\main\\resources\\serializeUser.txt";
+    private static final String Item_PATH = "src\\main\\resources\\serializeItem.txt";
 
     public static void serializeUser(Map<String, User> userMap) throws IOException {
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(User_PATH));

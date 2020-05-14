@@ -5,7 +5,8 @@ import model.Gender;
 import model.Item;
 import model.User;
 import storage.DataStorage;
-
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,6 +38,8 @@ public class AdvertisementMain {
                 case REGISTER:
                     registerUser();
                     break;
+                case IMPORT_USERS:
+                    importFromXlsx();
                 case EXIT:
                     isRun = false;
                     break;
@@ -44,6 +47,41 @@ public class AdvertisementMain {
                     System.out.println("Wrong Command!");
             }
         }
+    }
+
+    private static void importFromXlsx() {
+//        System.out.println("Please select xlsx path");
+//        String xlsxPath = scanner.nextLine();
+//        try{
+//
+//            XSSFWorkbook workbook = new XSSFWorkbook(xlsxPath);
+//              Sheet sheet = workbook.getSheetAt(0);
+//                int lasRowNum = sheet.getLastRowNum();
+//              for (int i = 1; i <= lasRowNum; i++){
+//                 Row row = sheet.getRow(i);
+//                   String name = row.getCell(0).getStringCellValue();
+//                   String surname = row.getCell(1).getStringCellValue();
+//                   int age = row.getCell(2).getIntCellValue();
+//                   Gender gender = row.getCell(3).getGenderCellValue();
+//                   String phoneNumber = row.getCell(4).getCellType() == CellType.NUMERIC ? String.valueOf(row.getCell(4).getNumericCellValue()) : row.getCell(4).getStringCellValue();
+//                   String password = row.getCell(5).getStringCellType() == CellType.NUMERIC ? String.valueOf(row.getCell(5).getNumericCellValue()) : row.getCell(5).getStringCellValue();
+//        User user = new User();
+//        user.setName(name);
+//        user.setSurName(surname);
+//        user.setAge(age.intValue());
+//        user.setGender(gender);
+//        user.setPhoneNumber(phoneNumber);
+//        user.setPassword(password);
+//        System.out.println("Import was success!");
+//        System.out.println(user);
+//        dataStorage.add(user);
+//               }
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        System.out.println("Error while importing users");
+//        }
+
+//
     }
 
     private static void registerUser() {
@@ -139,7 +177,6 @@ public class AdvertisementMain {
     }
 
 
-
     private static void addNewItem() {
         System.out.println("Please input Item data: title,text,price,category");
         System.out.println("Please choose category name from list " + Arrays.toString(Category.values()));
@@ -163,10 +200,11 @@ public class AdvertisementMain {
             String categoryStr = scanner.nextLine();
             Category category = Category.valueOf(categoryStr);
             dataStorage.printItemsByCategory(category);
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Wrong Category!");
         }
     }
+
     private static void deleteById() {
         System.out.println("Please choose id from list");
         dataStorage.printItemsByUser(currentUser);
@@ -174,7 +212,7 @@ public class AdvertisementMain {
         Item itemById = dataStorage.getItemById(id);
         if (itemById != null && itemById.getUser().equals(currentUser)) {
             dataStorage.deleteItemsById(id);
-        }else {
+        } else {
             System.out.println("Wrong Id!");
         }
     }
