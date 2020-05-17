@@ -15,27 +15,43 @@ public class DataStorage {
     private List<Item> items = new ArrayList<>();
 
 
-    public void initData() {
+//    public void initData() {
 //        map = FileUtil.deserializeUser();
 //        items = FileUtil.deserializeItem();
-        if (items != null && !items.isEmpty()) {
-            Item item = items.get(items.size() - 1);
-            itemId = item.getId() + 1;
-        }
-    }
+//
+//
+//        if (items != null && !items.isEmpty()) {
+//            Item item = items.get(items.size() - 1);
+//            itemId = item.getId() + 1;
+//        }
+//    }
 
     public void add(User user) throws IOException {
         map.put(user.getPhoneNumber(), user);
-//        FileUtil.serializeUser(map);
         FileUtil.user(map);
+        //FileUtil.serializeUser(map);
+
     }
 
     public void add(Item item) throws IOException {
         item.setId(itemId++);
         items.add(item);
-//        FileUtil.serializeItem(items);
         FileUtil.item(items);
+        // FileUtil.serializeItem(items);
+
     }
+
+//    public void addUser(User user) {
+//        Map<String,User> userMap = new HashMap<>();
+//        userMap.put(user.getPhoneNumber(),user);
+//        FileUtil.serializeUser(userMap);
+//
+//    }
+//    public void addItem(Item item) {
+//        List<Item> it = new ArrayList<>();
+//        it.add(item);
+//        FileUtil.serializeItem(it);
+//    }
 
     public User getUser(String phoneNumber) {
         return map.get(phoneNumber);
@@ -55,6 +71,7 @@ public class DataStorage {
             System.out.println(item);
         }
     }
+
 
     public void printItemsByUser(User user) {
         for (Item item : items) {
@@ -104,11 +121,13 @@ public class DataStorage {
                 iterator.remove();
             }
         }
-//        items.removeIf(item -> item.getUser().equals(user));
+//        FileUtil.serializeItem(items);
+//        items.removeIf(item -> item.getUser().equals(user));Use
     }
 
     public void deleteItemsById(long id) {
         items.remove(getItemById(id));
+//        FileUtil.serializeItem(items);
     }
 }
 

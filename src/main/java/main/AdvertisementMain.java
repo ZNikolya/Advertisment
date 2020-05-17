@@ -1,5 +1,4 @@
 package main;
-
 import model.Category;
 import model.Gender;
 import model.Item;
@@ -22,8 +21,9 @@ public class AdvertisementMain {
     private static final DataStorage dataStorage = new DataStorage();
     private static User currentUser = null;
 
-    public static void main(String[] args) {
-        dataStorage.initData();
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        // dataStorage.initData();
         boolean isRun = true;
         while (isRun) {
             Command.printMainCommands();
@@ -53,60 +53,80 @@ public class AdvertisementMain {
     }
 
     private static void importFromItemXlsx() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Please select xlsx path");
+                String xlsxPath = scanner.nextLine();
 
-        System.out.println("Please select xlsx path");
-        String xlsxPath = scanner.nextLine();
-        try {
-            XSSFWorkbook workbook = new XSSFWorkbook(xlsxPath);
-            Sheet sheet = workbook.getSheetAt(0);
-            int lasRowNum = sheet.getLastRowNum();
-            for (int i = 1; i <= lasRowNum; i++) {
-                Row row = sheet.getRow(i);
-              String title = row.getCell(0).getStringCellValue();
-                String text = row.getCell(1).getStringCellValue();
-                double price = row.getCell(2).getNumericCellValue();
-                Category category = Category.valueOf(row.getCell(3).getStringCellValue());
-                Item item = new Item(title, text, price,
-                        currentUser, category, new Date());
-                dataStorage.add(item);
+                try{
+                    XSSFWorkbook workbook = new XSSFWorkbook(xlsxPath);
+                    Sheet sheet = workbook.getSheetAt(0);
+                    int lastRowNum = sheet.getLastRowNum();
+                    for (int i = 1; i <= lastRowNum ; i++) {
+                        Row row = sheet.getRow(i);
+                        String title = row.getCell(0).getStringCellValue();
+                        String text = row.getCell(1).getStringCellValue();
+                        String price = row.getCell(2).getStringCellValue();
+                        Category category = Category.valueOf(row.getCell(3).getStringCellValue());
+                        Item item = new Item(title, text, price,
+                                currentUser, category, new Date());
+                        dataStorage.add(item);
+//                dataStorage.addItem(item);
+                    }
+                    System.out.println("Import was success!");
+                }catch (IOException e) {
+                    e.printStackTrace();
+                    System.out.println("Error while importing users");
+                }
             }
-            System.out.println("Import was success!");
+        }).start();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error while importing items");
-        }
     }
 
+
+
     private static void importFromUserXlsx() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Please select xlsx path");
+                String xlsxPath = scanner.nextLine();
 
-        System.out.println("Please select xlsx path");
-        String xlsxPath = scanner.nextLine();
-        try {
-
-            XSSFWorkbook workbook = new XSSFWorkbook(xlsxPath);
-            Sheet sheet = workbook.getSheetAt(0);
-            int lastRowNum = sheet.getLastRowNum();
-            for (int i = 1; i <= lastRowNum; i++) {
-                Row row = sheet.getRow(i);
-                String name = row.getCell(0).getStringCellValue();
-                String surName = row.getCell(1).getStringCellValue();
-                String age = row.getCell(3).getStringCellValue();
-                Gender gender = valueOf(row.getCell(2).getStringCellValue());
-                Cell phoneNumber = row.getCell(4);
-                String phoneNumberStr = phoneNumber.getCellType() == CellType.NUMERIC ?
-                        String.valueOf(Double.valueOf(phoneNumber.getNumericCellValue()).intValue()) : phoneNumber.getStringCellValue();
-                Cell password = row.getCell(5);
-                String passwordStr = password.getCellType() == CellType.NUMERIC ?
-                        String.valueOf(Double.valueOf(password.getNumericCellValue()).intValue()) : password.getStringCellValue();
-                User user = new User(name, surName, gender, age, phoneNumberStr, passwordStr);
-                dataStorage.add(user);
+                try {
+                    XSSFWorkbook workbook = new XSSFWorkbook(xlsxPath);
+                    Sheet sheet = workbook.getSheetAt(0);
+                    int lastRowNum = sheet.getLastRowNum();
+                    for (int i = 1; i <= lastRowNum; i++) {
+                        Row row = sheet.getRow(i);
+                        String name = row.getCell(0).getStringCellValue();
+                        String surName = row.getCell(1).getStringCellValue();
+                        Gender gender = Gender.valueOf(row.getCell(2).getStringCellValue());
+                        String age = row.getCell(3).getStringCellValue();
+                        Cell phoneNumber = row.getCell(4);
+                        String phoneNumberStr = phoneNumber.getCellType() == CellType.NUMERIC ?
+                                String.valueOf(Double.valueOf(phoneNumber.getNumericCellValue()).intValue()) : phoneNumber.getStringCellValue();
+                        Cell password = row.getCell(5);
+                        String passwordStr = password.getCellType() == CellType.NUMERIC ?
+                                String.valueOf(Double.valueOf(password.getNumericCellValue()).intValue()) : password.getStringCellValue();
+                        User user = new User();
+                        user.setName(name);
+                        user.setSurName(surName);
+                        user.setAge(age);
+                        user.setGender(gender);
+                        user.setPhoneNumber(phoneNumberStr);
+                        user.setPassword(passwordStr);
+                        dataStorage.add(user);
+                    }
+                    System.out.println("Import was success!");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.out.println("Error while importing users");
+                }
             }
-            System.out.println("Import was success!");
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error while importing users");
-        }
+        }).start();
+
+
     }
 
     private static void registerUser() {
@@ -120,7 +140,7 @@ public class AdvertisementMain {
                 User user = new User();
                 user.setName(userDataArray[0]);
                 user.setSurName(userDataArray[1]);
-                user.setGender(Gender.valueOf(userDataArray[2].toUpperCase()));
+                user.setGender(valueOf(userDataArray[2].toUpperCase()));
                 user.setAge(userDataArray[3]);
                 user.setPhoneNumber(userDataArray[4]);
                 user.setPassword(userDataArray[5]);
@@ -168,6 +188,9 @@ public class AdvertisementMain {
                 userCommand = -1;
             }
             switch (userCommand) {
+                case IMPORT_ITEMS:
+                    importFromItemXlsx();
+                    break;
                 case ADD_NEW_AD:
                     addNewItem();
                     break;
@@ -192,9 +215,6 @@ public class AdvertisementMain {
                 case DELETE_AD_BY_ID:
                     deleteById();
                     break;
-                case IMPORT_ITEMS:
-                    importFromItemXlsx();
-                    break;
                 case LOGOUT:
                     isRun = false;
                     break;
@@ -211,7 +231,7 @@ public class AdvertisementMain {
         try {
             String itemDataStr = scanner.nextLine();
             String[] itemDataArray = itemDataStr.split(",");
-            Item item = new Item(itemDataArray[0], itemDataArray[1], Double.parseDouble(itemDataArray[2]),
+            Item item = new Item(itemDataArray[0], itemDataArray[1], itemDataArray[2],
                     currentUser, Category.valueOf(itemDataArray[3].toUpperCase()), new Date());
             dataStorage.add(item);
             System.out.println("Item was successfully added");
