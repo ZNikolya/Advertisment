@@ -15,13 +15,14 @@ public interface Command {
     int PRINT_ALL_ADS_SORT_BY_DATE = 6;
     int DELETE_MY_ALL_ADS = 7;
     int DELETE_AD_BY_ID = 8;
+    int IMPORT_ITEMS = 9;
     int LOGOUT = 0;
 
 
     static void printMainCommands() {
         System.out.println("Please input " + LOGIN + " for LOGIN");
-        System.out.println("Please input " + IMPORT_USERS + " for IMPORT_USERS");
         System.out.println("Please input " + REGISTER + " for REGISTER");
+        System.out.println("Please input " + IMPORT_USERS + " for IMPORT_USERS");
         System.out.println("Please input " + EXIT + " for EXIT");
     }
 
@@ -34,6 +35,7 @@ public interface Command {
         System.out.println("Please input " + PRINT_ALL_ADS_SORT_BY_DATE + " for PRINT_ALL_AD_BY_DATE_SORT");
         System.out.println("Please input " + DELETE_MY_ALL_ADS + " for DELETE_MY_ALL_ADS");
         System.out.println("Please input " + DELETE_AD_BY_ID + " for DELETE_AD_BY_ID");
+        System.out.println("Please input " + IMPORT_ITEMS + " for IMPORT_ITEMS");
         System.out.println("Please input " + LOGOUT + " for LOGOUT");
     }
 }

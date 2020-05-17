@@ -16,28 +16,25 @@ public class DataStorage {
 
 
     public void initData() {
-        try {
-            map = FileUtil.deserializeUser();
-            try {
-                items = FileUtil.deserializeItem();
-            }catch (Exception e){
-                System.out.println("The file is empty");
-            }
-        } catch (Exception e) {
-            System.out.println("The file is empty");
+//        map = FileUtil.deserializeUser();
+//        items = FileUtil.deserializeItem();
+        if (items != null && !items.isEmpty()) {
+            Item item = items.get(items.size() - 1);
+            itemId = item.getId() + 1;
         }
     }
 
     public void add(User user) throws IOException {
-
         map.put(user.getPhoneNumber(), user);
-        FileUtil.serializeUser(map);
+//        FileUtil.serializeUser(map);
+        FileUtil.user(map);
     }
 
     public void add(Item item) throws IOException {
         item.setId(itemId++);
         items.add(item);
-        FileUtil.serializeItem(items);
+//        FileUtil.serializeItem(items);
+        FileUtil.item(items);
     }
 
     public User getUser(String phoneNumber) {
@@ -58,7 +55,6 @@ public class DataStorage {
             System.out.println(item);
         }
     }
-
 
     public void printItemsByUser(User user) {
         for (Item item : items) {
@@ -114,6 +110,5 @@ public class DataStorage {
     public void deleteItemsById(long id) {
         items.remove(getItemById(id));
     }
-
-
 }
+

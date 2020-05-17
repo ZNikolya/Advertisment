@@ -4,15 +4,17 @@ import model.Category;
 import model.Gender;
 import model.Item;
 import model.User;
-import storage.DataStorage;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.*;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import storage.DataStorage;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
 
 import static main.Command.*;
+import static model.Gender.valueOf;
 
 public class AdvertisementMain {
 
@@ -39,7 +41,8 @@ public class AdvertisementMain {
                     registerUser();
                     break;
                 case IMPORT_USERS:
-                    importFromXlsx();
+                    importFromUserXlsx();
+                    break;
                 case EXIT:
                     isRun = false;
                     break;
@@ -49,39 +52,61 @@ public class AdvertisementMain {
         }
     }
 
-    private static void importFromXlsx() {
-//        System.out.println("Please select xlsx path");
-//        String xlsxPath = scanner.nextLine();
-//        try{
-//
-//            XSSFWorkbook workbook = new XSSFWorkbook(xlsxPath);
-//              Sheet sheet = workbook.getSheetAt(0);
-//                int lasRowNum = sheet.getLastRowNum();
-//              for (int i = 1; i <= lasRowNum; i++){
-//                 Row row = sheet.getRow(i);
-//                   String name = row.getCell(0).getStringCellValue();
-//                   String surname = row.getCell(1).getStringCellValue();
-//                   int age = row.getCell(2).getIntCellValue();
-//                   Gender gender = row.getCell(3).getGenderCellValue();
-//                   String phoneNumber = row.getCell(4).getCellType() == CellType.NUMERIC ? String.valueOf(row.getCell(4).getNumericCellValue()) : row.getCell(4).getStringCellValue();
-//                   String password = row.getCell(5).getStringCellType() == CellType.NUMERIC ? String.valueOf(row.getCell(5).getNumericCellValue()) : row.getCell(5).getStringCellValue();
-//        User user = new User();
-//        user.setName(name);
-//        user.setSurName(surname);
-//        user.setAge(age.intValue());
-//        user.setGender(gender);
-//        user.setPhoneNumber(phoneNumber);
-//        user.setPassword(password);
-//        System.out.println("Import was success!");
-//        System.out.println(user);
-//        dataStorage.add(user);
-//               }
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        System.out.println("Error while importing users");
-//        }
+    private static void importFromItemXlsx() {
 
-//
+        System.out.println("Please select xlsx path");
+        String xlsxPath = scanner.nextLine();
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(xlsxPath);
+            Sheet sheet = workbook.getSheetAt(0);
+            int lasRowNum = sheet.getLastRowNum();
+            for (int i = 1; i <= lasRowNum; i++) {
+                Row row = sheet.getRow(i);
+              String title = row.getCell(0).getStringCellValue();
+                String text = row.getCell(1).getStringCellValue();
+                double price = row.getCell(2).getNumericCellValue();
+                Category category = Category.valueOf(row.getCell(3).getStringCellValue());
+                Item item = new Item(title, text, price,
+                        currentUser, category, new Date());
+                dataStorage.add(item);
+            }
+            System.out.println("Import was success!");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error while importing items");
+        }
+    }
+
+    private static void importFromUserXlsx() {
+
+        System.out.println("Please select xlsx path");
+        String xlsxPath = scanner.nextLine();
+        try {
+
+            XSSFWorkbook workbook = new XSSFWorkbook(xlsxPath);
+            Sheet sheet = workbook.getSheetAt(0);
+            int lastRowNum = sheet.getLastRowNum();
+            for (int i = 1; i <= lastRowNum; i++) {
+                Row row = sheet.getRow(i);
+                String name = row.getCell(0).getStringCellValue();
+                String surName = row.getCell(1).getStringCellValue();
+                String age = row.getCell(3).getStringCellValue();
+                Gender gender = valueOf(row.getCell(2).getStringCellValue());
+                Cell phoneNumber = row.getCell(4);
+                String phoneNumberStr = phoneNumber.getCellType() == CellType.NUMERIC ?
+                        String.valueOf(Double.valueOf(phoneNumber.getNumericCellValue()).intValue()) : phoneNumber.getStringCellValue();
+                Cell password = row.getCell(5);
+                String passwordStr = password.getCellType() == CellType.NUMERIC ?
+                        String.valueOf(Double.valueOf(password.getNumericCellValue()).intValue()) : password.getStringCellValue();
+                User user = new User(name, surName, gender, age, phoneNumberStr, passwordStr);
+                dataStorage.add(user);
+            }
+            System.out.println("Import was success!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error while importing users");
+        }
     }
 
     private static void registerUser() {
@@ -96,7 +121,7 @@ public class AdvertisementMain {
                 user.setName(userDataArray[0]);
                 user.setSurName(userDataArray[1]);
                 user.setGender(Gender.valueOf(userDataArray[2].toUpperCase()));
-                user.setAge(Integer.parseInt(userDataArray[3]));
+                user.setAge(userDataArray[3]);
                 user.setPhoneNumber(userDataArray[4]);
                 user.setPassword(userDataArray[5]);
                 dataStorage.add(user);
@@ -166,6 +191,9 @@ public class AdvertisementMain {
                     break;
                 case DELETE_AD_BY_ID:
                     deleteById();
+                    break;
+                case IMPORT_ITEMS:
+                    importFromItemXlsx();
                     break;
                 case LOGOUT:
                     isRun = false;

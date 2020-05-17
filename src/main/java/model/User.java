@@ -1,17 +1,23 @@
 package model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
+
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 
 public class User implements Serializable {
 
     private String name;
     private String surName;
     private Gender gender;
-    private int age;
+    private String age;
     private String phoneNumber;
     private String password;
 
-    }
+}
